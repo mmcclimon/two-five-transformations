@@ -8,18 +8,19 @@ use Exporter;
 
 use warnings;
 use strict;
+use Scalar::Util qw(blessed);
 
 sub new {
     my $class = shift;
     my ($root, $third, $seventh) = @_;
     
     my $self = bless {
-        root => $root,
-        r => $root,
-        third => $third,
-        t => $third,
-        seventh => $seventh,
-        s => $seventh,
+        root => _mod12($root),
+        r => _mod12($root),
+        third => _mod12($third),
+        t => _mod12($third),
+        seventh => _mod12($seventh),
+        s => _mod12($seventh),
     }, $class;
 }
 
@@ -31,13 +32,9 @@ sub toString {
 
 
 sub TF {
-    if (ref $_[0]) {
+    if (blessed $_[0]) {
         my $chord = shift;
-        return  TwoFive->new(
-                    _mod12 ($chord->{root} + 5),
-                    _mod12 ($chord->{seventh} - 1),    
-                    _mod12 ($chord->{third}),
-               );   
+        return  TwoFive->new($chord->{r} + 5, $chord->{s} - 1, $chord->{t});   
     } else {
         my ($r, $t, $s) = @_;
         return TwoFive->new($r + 5, $s - 1, $t);
@@ -45,30 +42,33 @@ sub TF {
 }
 
 sub TFT {
-    my $chord = shift;
-    return  TwoFive->new(
-                _mod12 ($chord->{root} - 1),
-                _mod12 ($chord->{seventh} + 5),    
-                _mod12 ($chord->{third} + 6),
-           );
+    if (blessed $_[0]) {
+        my $chord = shift;
+        return  TwoFive->new($chord->{r} - 1, $chord->{s} + 5, $chord->{t} + 6);
+    } else {
+        my ($r, $t, $s) = @_;
+        return TwoFive->new($r - 1, $s + 5, $t + 6);
+    }
 }
 
 sub third {
-    my $chord = shift;
-    return  TwoFive->new(
-                _mod12 ($chord->{root}),
-                _mod12 ($chord->{third} - 1),    
-                _mod12 ($chord->{seventh}),
-           );    
+    if (blessed $_[0]) {
+        my $chord = shift;
+        return  TwoFive->new($chord->{r}, $chord->{t} - 1, $chord->{s});           
+    } else {
+        my ($r, $t, $s) = @_;
+        return  TwoFive->new($r, $t - 1, $s);           
+    }
 }
 
 sub seventh {
-    my $chord = shift;
-    return  TwoFive->new(
-                _mod12 ($chord->{root}),
-                _mod12 ($chord->{third}),    
-                _mod12 ($chord->{seventh} - 1),
-           );    
+    if (blessed $_[0]) {
+        my $chord = shift;
+        return  TwoFive->new($chord->{r}, $chord->{t} - 1, $chord->{s});           
+    } else {
+        my ($r, $t, $s) = @_;
+        return  TwoFive->new($r, $t, $s - 1);           
+    }
 }
 
 
