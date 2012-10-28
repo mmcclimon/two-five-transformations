@@ -31,12 +31,17 @@ sub toString {
 
 
 sub TF {
-    my $chord = shift;
-    return  TwoFive->new(
-                _mod12 ($chord->{root} + 5),
-                _mod12 ($chord->{seventh} - 1),    
-                _mod12 ($chord->{third}),
-           );
+    if (ref $_[0]) {
+        my $chord = shift;
+        return  TwoFive->new(
+                    _mod12 ($chord->{root} + 5),
+                    _mod12 ($chord->{seventh} - 1),    
+                    _mod12 ($chord->{third}),
+               );   
+    } else {
+        my ($r, $t, $s) = @_;
+        return TwoFive->new($r + 5, $s - 1, $t);
+    }
 }
 
 sub TFT {
