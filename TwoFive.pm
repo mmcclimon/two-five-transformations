@@ -60,6 +60,13 @@ sub SEVENTH {
                                }, @_);
 }
 
+sub T {
+    my ($self, $tNum) = @_;
+    my @new;
+    push @new, _mod12($_ + $tNum) for ($self->toList);
+    return TwoFive->new(@new);
+}
+
 sub root { return $_[0]->{r} if (blessed $_[0]); }
 sub third { return $_[0]->{t} if (blessed $_[0]); }
 sub seventh { return $_[0]->{s} if (blessed $_[0]); }
