@@ -24,3 +24,7 @@ say $dm->TF->toString;
 say $dm->root;
 say $dm->third;
 say $dm->seventh;
+
+say $dm->getQuality;
+say getQuality $dm;
+say getQuality (0, 4, 11);

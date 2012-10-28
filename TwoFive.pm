@@ -4,7 +4,7 @@ package TwoFive;
 use Exporter;
 
 @ISA = qw(Exporter);
-@EXPORT = qw(TF TFT THIRD SEVENTH);
+@EXPORT = qw(TF TFT THIRD SEVENTH getQuality);
 
 use warnings;
 use strict;
@@ -58,6 +58,17 @@ sub SEVENTH {
 sub root { return $_[0]->{r} if (blessed $_[0]); }
 sub third { return $_[0]->{t} if (blessed $_[0]); }
 sub seventh { return $_[0]->{s} if (blessed $_[0]); }
+
+sub getQuality {
+    my ($r, $t, $s) = (blessed $_[0]) ? ($_[0]->{r}, $_[0]->{t}, $_[0]->{s})
+                                      : @_;
+    my $qual3 = _mod12 ($t - $r);
+    my $qual7 = _mod12 ($s - $r);
+    return "min7" if ($qual3 == 3 && $qual7 == 10);
+    return "dom7" if ($qual3 == 4 && $qual7 == 10);
+    return "maj7" if ($qual3 == 4 && $qual7 == 11);
+    return "unknown";
+}
 
 # takes coderef and either a blessed ref or a list
 sub _makeWithFunc {
