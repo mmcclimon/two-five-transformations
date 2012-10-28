@@ -30,6 +30,11 @@ sub toString {
     return $self->{r}, " ", $self->{t}, " ", $self->{s};
 }
 
+sub toList {
+    my $self = shift;
+    return ($self->{r}, $self->{t}, $self->{s});
+}
+
 
 sub TF {
     return &_makeWithFunc(sub { my ($r, $t, $s) = @_;
