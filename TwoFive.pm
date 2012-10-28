@@ -33,25 +33,25 @@ sub toString {
 
 sub TF {
     return &_makeWithFunc(sub { my ($r, $t, $s) = @_;
-                                return TwoFive->new($r + 5, $s - 1, $t);
+                                return ($r + 5, $s - 1, $t);
                               }, @_);
 }
 
 sub TFT {
     return &_makeWithFunc( sub { my ($r, $t, $s) = @_;
-                                return TwoFive->new($r - 1, $s + 5, $t + 6);
+                                return ($r - 1, $s + 5, $t + 6);
                                }, @_);
 }
 
 sub THIRD {
     return &_makeWithFunc( sub { my ($r, $t, $s) = @_;
-                                 return TwoFive->new($r, $t-1, $s)
+                                 return ($r, $t-1, $s)
                                }, @_);
 }
 
 sub SEVENTH {
     return &_makeWithFunc( sub { my ($r, $t, $s) = @_;
-                                 return TwoFive->new($r, $t, $s-1)
+                                 return ($r, $t, $s-1)
                                }, @_);
 }
 
@@ -64,7 +64,7 @@ sub _makeWithFunc {
     my $func = shift;
     my ($r, $t, $s) = (blessed $_[0]) ? ($_[0]->{r}, $_[0]->{t}, $_[0]->{s})
                                       : @_;
-    return $func->($r, $t, $s);
+    return TwoFive->new($func->($r, $t, $s));
 }
 
 sub _mod12 {
