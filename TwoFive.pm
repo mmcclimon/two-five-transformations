@@ -32,45 +32,37 @@ sub toString {
 
 
 sub TF {
-    if (blessed $_[0]) {
-        my $chord = shift;
-        return  TwoFive->new($chord->{r} + 5, $chord->{s} - 1, $chord->{t});   
-    } else {
-        my ($r, $t, $s) = @_;
-        return TwoFive->new($r + 5, $s - 1, $t);
-    }
+    return &_makeWithFunc(sub { my ($r, $t, $s) = @_;
+                                return TwoFive->new($r + 5, $s - 1, $t);
+                              }, @_);
 }
 
 sub TFT {
-    if (blessed $_[0]) {
-        my $chord = shift;
-        return  TwoFive->new($chord->{r} - 1, $chord->{s} + 5, $chord->{t} + 6);
-    } else {
-        my ($r, $t, $s) = @_;
-        return TwoFive->new($r - 1, $s + 5, $t + 6);
-    }
+    return &_makeWithFunc( sub { my ($r, $t, $s) = @_;
+                                return TwoFive->new($r - 1, $s + 5, $t + 6);
+                               }, @_);
 }
 
 sub third {
-    if (blessed $_[0]) {
-        my $chord = shift;
-        return  TwoFive->new($chord->{r}, $chord->{t} - 1, $chord->{s});           
-    } else {
-        my ($r, $t, $s) = @_;
-        return  TwoFive->new($r, $t - 1, $s);           
-    }
+    return &_makeWithFunc( sub { my ($r, $t, $s) = @_;
+                                 return TwoFive->new($r, $t-1, $s)
+                               }, @_);
 }
 
 sub seventh {
-    if (blessed $_[0]) {
-        my $chord = shift;
-        return  TwoFive->new($chord->{r}, $chord->{t} - 1, $chord->{s});           
-    } else {
-        my ($r, $t, $s) = @_;
-        return  TwoFive->new($r, $t, $s - 1);           
-    }
+    return &_makeWithFunc( sub { my ($r, $t, $s) = @_;
+                                 return TwoFive->new($r, $t, $s-1)
+                               }, @_);
 }
 
+
+# takes coderef and either a blessed ref or a list
+sub _makeWithFunc {
+    my $func = shift;
+    my ($r, $t, $s) = (blessed $_[0]) ? ($_[0]->{r}, $_[0]->{t}, $_[0]->{s})
+                                      : @_;
+    return $func->($r, $t, $s);
+}
 
 sub _mod12 {
     my $n = shift;
