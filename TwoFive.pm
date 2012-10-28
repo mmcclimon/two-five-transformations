@@ -4,7 +4,7 @@ package TwoFive;
 use Exporter;
 
 @ISA = qw(Exporter);
-@EXPORT = qw(TF);
+@EXPORT = qw(TF TFT third seventh);
 
 use warnings;
 use strict;
@@ -24,7 +24,7 @@ sub new {
 }
 
 
-sub getHarmString {
+sub toString {
     my $self = shift;
     return $self->{r}, " ", $self->{t}, " ", $self->{s};
 }
@@ -39,6 +39,32 @@ sub TF {
            );
 }
 
+sub TFT {
+    my $chord = shift;
+    return  TwoFive->new(
+                _mod12 ($chord->{root} - 1),
+                _mod12 ($chord->{seventh} + 5),    
+                _mod12 ($chord->{third} + 6),
+           );
+}
+
+sub third {
+    my $chord = shift;
+    return  TwoFive->new(
+                _mod12 ($chord->{root}),
+                _mod12 ($chord->{third} - 1),    
+                _mod12 ($chord->{seventh}),
+           );    
+}
+
+sub seventh {
+    my $chord = shift;
+    return  TwoFive->new(
+                _mod12 ($chord->{root}),
+                _mod12 ($chord->{third}),    
+                _mod12 ($chord->{seventh} - 1),
+           );    
+}
 
 
 sub _mod12 {
