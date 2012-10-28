@@ -8,10 +8,13 @@ use Exporter;
 
 use warnings;
 use strict;
-use Scalar::Util qw(blessed);
+use Scalar::Util qw(blessed looks_like_number);
+use Carp;
 
 sub new {
     my $class = shift;
+    return &newFromChordSymbol(@_) if (!looks_like_number($_[0]));
+
     my ($root, $third, $seventh) = @_;
     
     my $self = bless {
@@ -82,6 +85,40 @@ sub getQuality {
     return "unknown";
 }
 
+{
+    no warnings qw(qw);
+    my %numRoots = qw(0 C 1 C#/Db 2 D 3 D#/Eb 4 E 5 F 6 F#/Gb 7 G 8 Ab 9 A 10 Bb 11 B);
+    my %noteRoots = qw(C 0 C# 1 Db 1 D 2 D# 3 Eb 3 E 4 F 5 F# 6 Gb 6 G 7 
+                       G# 8 Ab 8 A 9 A# 10 Bb 10 B 11);
+                       
+    sub getChordSymbol {
+        my $self = shift;
+        my $root = $numRoots{$self->{r}};
+        my $suffix = $self->getQuality;
+        if ($suffix eq "min7") { $suffix = 'm7' }
+        elsif ($suffix eq "maj7") { $suffix = 'M7' }
+        elsif ($suffix eq "dom7") { $suffix = '7' }
+        else { $suffix = "?" }
+        return $root . $suffix;
+    }
+    
+    sub newFromChordSymbol {
+        my @letters = split //, shift;
+        my $root = uc shift @letters;
+        $root .= shift @letters if ($letters[0] =~ /^[b#]$/);
+        my $rootNum = $noteRoots{$root};
+        my $suffix = join '', @letters;
+        
+        my @chordTones = ($rootNum);
+        if ($suffix eq 'm7') { push @chordTones, ($rootNum + 3, $rootNum + 10) }
+        elsif ($suffix eq '7') { push @chordTones, ($rootNum + 4, $rootNum + 10) }
+        elsif ($suffix eq 'M7') { push @chordTones, ($rootNum + 4, $rootNum + 11) }
+        else { croak "Unrecognized chord symbol given"; }
+        return TwoFive->new(@chordTones);
+        
+        
+    }
+}
 # takes coderef and either a blessed ref or a list
 sub _makeWithFunc {
     my $func = shift;
