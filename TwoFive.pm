@@ -4,7 +4,7 @@ package TwoFive;
 use Exporter;
 
 @ISA = qw(Exporter);
-@EXPORT = qw(TF TFT third seventh);
+@EXPORT = qw(TF TFT THIRD SEVENTH);
 
 use warnings;
 use strict;
@@ -43,18 +43,21 @@ sub TFT {
                                }, @_);
 }
 
-sub third {
+sub THIRD {
     return &_makeWithFunc( sub { my ($r, $t, $s) = @_;
                                  return TwoFive->new($r, $t-1, $s)
                                }, @_);
 }
 
-sub seventh {
+sub SEVENTH {
     return &_makeWithFunc( sub { my ($r, $t, $s) = @_;
                                  return TwoFive->new($r, $t, $s-1)
                                }, @_);
 }
 
+sub root { return $_[0]->{r} if (blessed $_[0]); }
+sub third { return $_[0]->{t} if (blessed $_[0]); }
+sub seventh { return $_[0]->{s} if (blessed $_[0]); }
 
 # takes coderef and either a blessed ref or a list
 sub _makeWithFunc {
